@@ -1,0 +1,74 @@
+<html><head>
+<!-- Core + Skin CSS -->
+<link rel="stylesheet" type="text/css" href="yui/build/button/assets/skins/sam/button.css">
+<script type="text/javascript" src="yui/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="yui/build/element/element-beta-min.js"></script>
+<script type="text/javascript" src="yui/build/button/button-beta-min.js"></script>
+<script src="yui/build/yahoo/yahoo-min.js"></script>
+<script src="yui/build/event/event-min.js"></script>
+<script src="yui/build/connection/connection-min.js"></script>
+<title>I liek to cheat at scrabble</title>
+<style>
+body {
+  font-family: Tahoma, sans-serif;
+  font-size:12px;
+  color:#DDDDDD;
+  background:#222222;
+}
+a { color: #AA8888; }
+</style>
+</head>
+
+<body class="yui-skin-sam">
+This returns words from the TWL dictionary<br/>
+Letters: Get words containing these letters<br/>
+Word length: 0 for all permutations of "Letters" or the required number. This can be different to the number of letters you enter.<p>
+<form onSubmit="getResults();return false;" id="form" action="#">
+Letters: <input id='letters' type='text' autocomplete="off"/>
+Starts with: <input id='start' type='text' size='2' autocomplete="off" maxlength='1'/>
+Ends with: <input id='end' type='text' size='2' autocomplete="off" maxlength='1'/>
+Word Length : <input id='n' type='text' size='2' autocomplete="off"/>
+<input type='submit' id="submit" value="Get words" onClick="getResults();">
+</form>
+
+
+<div id="result"></div>
+
+<p>
+<a href="words.txt">Source code</a>
+<script type="text/javascript">
+
+var oSubmitButton1 = new YAHOO.widget.Button("submit");
+
+var YUC = YAHOO.util.Connect;
+var handleEvents = {
+	start: function(eventType, args) {
+		document.getElementById('result').innerHTML = "<img src=\"6-0.gif\">";
+	}
+}
+YUC.startEvent.subscribe(handleEvents.start, handleEvents);
+var callback = {
+	success: function(o) {
+		var div = document.getElementById('result');
+		if (o.responseText !== undefined) {
+			div.innerHTML = "<pre>" + o.responseText + "</pre>";
+		}
+	},
+	failure: function(o) {
+		var div = document.getElementById('result');
+		div.innerHTML = "FAIL";
+	}
+}
+
+function getResults() {
+	var l = document.getElementById('letters').value;
+	var s = document.getElementById('start').value;
+	var e = document.getElementById('end').value;
+	var n = document.getElementById('n').value;
+	if (!n) n = 0;
+	var sUrl = "http://www.whatsbeef.net/wabz/scrabble/words.cgi?l=" +
+				l +	"&debug=0&n=" + n + "&s=" + s + "&e=" + e;
+	YAHOO.util.Connect.asyncRequest('GET', sUrl, callback, null);
+}
+</script>
+
